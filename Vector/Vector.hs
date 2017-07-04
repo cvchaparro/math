@@ -3,46 +3,47 @@ module Vector.Vector
   , times
   , plus
   , dot
-  , vlen
+  , vlength
   , isTheSameTypeOfVector
   ) where
 
-data Vector = Vector  [Double]
-            | Vector2 (Double,Double)
-            | Vector3 (Double,Double,Double)
-            | Vector4 (Double,Double,Double,Double) deriving (Show, Read)
+data Vector = Vector  { elements :: [Double] }
+            | Vector2 { i :: Double, j :: Double }
+            | Vector3 { i :: Double, j :: Double, k :: Double }
+            | Vector4 { i :: Double, j :: Double, k :: Double, l :: Double }
+            deriving (Show, Read)
 
 times :: Double -> Vector -> Vector
-times k (Vector2 (v1, v2))         = Vector2 (v1 * k, v2 * k)
-times k (Vector3 (v1, v2, v3))     = Vector3 (v1 * k, v2 * k, v3 * k)
-times k (Vector4 (v1, v2, v3, v4)) = Vector4 (v1 * k, v2 * k, v3 * k, v4 * k)
-times k (Vector  xs)               = Vector  (map (*k) xs)
+times c (Vector2 i j)     = Vector2 (i * c) (j * c)
+times c (Vector3 i j k)   = Vector3 (i * c) (j * c) (k * c)
+times c (Vector4 i j k l) = Vector4 (i * c) (j * c) (k * c) (l * c)
+times c (Vector  v)       = Vector  (map (* c) v)
 
 plus :: Vector -> Vector -> Maybe Vector
-plus (Vector2 (i,j))     (Vector2 (i',j'))       = Just (Vector2 (i + i', j + j'))
-plus (Vector3 (i,j,k))   (Vector3 (i',j',k'))    = Just (Vector3 (i + i', j + j', k + k'))
-plus (Vector4 (i,j,k,l)) (Vector4 (i',j',k',l')) = Just (Vector4 (i + i', j + j', k + k', l + l'))
-plus (Vector  xs)        (Vector  ys)            = if length xs == length ys
-                                                      then Just (Vector (zipWith (+) xs ys))
-                                                      else Nothing
-plus _                   _                       = Nothing
+plus (Vector2 i j)     (Vector2 i' j')       = Just (Vector2 (i + i') (j + j'))
+plus (Vector3 i j k)   (Vector3 i' j' k')    = Just (Vector3 (i + i') (j + j') (k + k'))
+plus (Vector4 i j k l) (Vector4 i' j' k' l') = Just (Vector4 (i + i') (j + j') (k + k') (l + l'))
+plus (Vector  v1)      (Vector  v2)          = if length v1 == length v2
+                                                  then Just (Vector (zipWith (+) v1 v2))
+                                                  else Nothing
+plus _                   _                   = Nothing
 
 dot :: Vector -> Vector -> Maybe Double
-dot (Vector2 (i,j))     (Vector2 (i',j'))       = Just (i * i' + j * j')
-dot (Vector3 (i,j,k))   (Vector3 (i',j',k'))    = Just (i * i' + j * j' + k * k')
-dot (Vector4 (i,j,k,l)) (Vector4 (i',j',k',l')) = Just (i * i' + j * j' + k * k' + l * l')
-dot (Vector  xs)        (Vector  ys)            = Just (sum $ zipWith (*) xs ys)
-dot _                   _                       = Nothing
+dot (Vector2 i j)     (Vector2 i' j')       = Just (i * i' + j * j')
+dot (Vector3 i j k)   (Vector3 i' j' k')    = Just (i * i' + j * j' + k * k')
+dot (Vector4 i j k l) (Vector4 i' j' k' l') = Just (i * i' + j * j' + k * k' + l * l')
+dot (Vector  v1)      (Vector  v2)          = Just (sum $ zipWith (*) v1 v2)
+dot _                   _                   = Nothing
 
-vlen :: Vector -> Int
-vlen (Vector2 _)  = 2
-vlen (Vector3 _)  = 3
-vlen (Vector4 _)  = 4
-vlen (Vector  xs) = length xs
+vlength :: Vector -> Int
+vlength (Vector2 _ _)     = 2
+vlength (Vector3 _ _ _)   = 3
+vlength (Vector4 _ _ _ _) = 4
+vlength (Vector  v)       = length v
 
 isTheSameTypeOfVector :: Vector -> Vector -> Bool
-isTheSameTypeOfVector (Vector2  _) (Vector2  _) = True
-isTheSameTypeOfVector (Vector3  _) (Vector3  _) = True
-isTheSameTypeOfVector (Vector4  _) (Vector4  _) = True
-isTheSameTypeOfVector (Vector  v1) (Vector  v2) = vlen (Vector v1) == vlen (Vector v2)
-isTheSameTypeOfVector _            _            = False
+isTheSameTypeOfVector (Vector2 _ _)     (Vector2 _ _)     = True
+isTheSameTypeOfVector (Vector3 _ _ _)   (Vector3  _ _ _)  = True
+isTheSameTypeOfVector (Vector4 _ _ _ _) (Vector4 _ _ _ _) = True
+isTheSameTypeOfVector (Vector  v1)      (Vector  v2)      = vlength (Vector v1) == vlength (Vector v2)
+isTheSameTypeOfVector _            _                      = False
