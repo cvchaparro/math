@@ -1,11 +1,11 @@
-module Vector
-( Vector(..)
-, times
-, plus
-, dot
-, vlen
-, isTheSameTypeOfVector
-) where
+module Vector.Vector
+  ( Vector(..)
+  , times
+  , plus
+  , dot
+  , vlen
+  , isTheSameTypeOfVector
+  ) where
 
 data Vector = Vector  [Double]
             | Vector2 (Double,Double)
@@ -35,9 +35,9 @@ dot (Vector  xs)        (Vector  ys)            = Just (sum $ zipWith (*) xs ys)
 dot _                   _                       = Nothing
 
 vlen :: Vector -> Int
-vlen (Vector2 v)  = 2
-vlen (Vector3 v)  = 3
-vlen (Vector4 v)  = 4
+vlen (Vector2 _)  = 2
+vlen (Vector3 _)  = 3
+vlen (Vector4 _)  = 4
 vlen (Vector  xs) = length xs
 
 isTheSameTypeOfVector :: Vector -> Vector -> Bool
